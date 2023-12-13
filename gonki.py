@@ -6,7 +6,7 @@ width = 600
 height = 800
 
 wrap.world.create_world(width,height)
-
+#dsadavdha
 start = time.time()
 speed = -1
 
