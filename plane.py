@@ -17,10 +17,13 @@ reload_speed = 3
 s_level = 0
 wawe = 1
 gruz_enemies = 5
-enemy_hit = 0
 istrebitel_enemies = 10
 big_plane_enemies = 0
 time_wawe =0
+gruz_enemie_hit=0
+istrebitel_enemie_hit=0
+big_plane_enemie_hit=0
+
 
 wrap.world.create_world(width,height)
 bullet = None
@@ -156,7 +159,7 @@ def bullet_speed_button():
     if click == True and points >= 6:
         bullet_speed_level += 1
         wrap.sprite_text.set_text(bullet_text, str(bullet_speed_level))
-        bullet_speed_level += 0.5
+        bullet_speed += 0.5
         points_check(-6)
 
 
@@ -245,7 +248,29 @@ def hp_check():
         wrap.sprite_text.set_text_color(heal, 121,240,47)
 
 def plane_home(sprite_id):
-    wrap.sprite.move_to(sprite_id,-100,random.randint(50, 300))
+    wrap.sprite.move_to(sprite_id,-300,random.randint(50, 300))
+
+def plane_hit(id,hp,enemie,points_give,enemie_hit):
+    global points,point,bullet,plane,gruz_enemies
+    if bullet == None:
+        return enemie_hit
+    if id==None:
+        return enemie_hit
+    shot = wrap.sprite.is_collide_sprite(bullet, id)
+    if shot != True:
+        return enemie_hit
+    enemie_hit+=1
+    wrap.sprite.remove(bullet)
+    bullet = None
+    if enemie_hit == hp:
+        plane_x = wrap.sprite.get_x(id)
+        plane_y = wrap.sprite.get_y(id)
+        boom(plane_x,plane_y)
+        plane_home(id)
+        enemie(-1)
+        points_check(points_give)
+        enemie_hit=0
+    return enemie_hit
 
 
 """
@@ -267,38 +292,24 @@ def plane_home(sprite_id):
 """
 
 @wrap.always(10)
-def points_get():
-    global points,point,bullet,plane,gruz_enemies,enemy_hit
-
+def bullet_move():
+    global points,point,bullet,plane,gruz_enemies,enemy_hit,gruz_enemie_hit,istrebitel_enemie_hit,big_plane_enemie_hit
     if bullet == None:
         return
-    wrap.sprite.move_at_angle_dir(bullet, bullet_speed)
-    if plane==None:
-        return
-
-    shot = wrap.sprite.is_collide_sprite(bullet,plane)
-
-    if shot == True:
-        enemy_hit +=1
-        if enemy_hit == 2:
-            plane_x = wrap.sprite.get_x(plane)
-            plane_y = wrap.sprite.get_y(plane)
-            wrap.sprite.remove(bullet)
-            bullet = None
-            boom(plane_x,plane_y)
-            plane_home(plane)
-            gruz_check(-1)
-            points_check(1)
-            enemy_hit=0
+    wrap.sprite.move_at_angle_dir(bullet,bullet_speed)
+    gruz_enemie_hit= plane_hit(plane,2,gruz_check,2,gruz_enemie_hit)
+    istrebitel_enemie_hit= plane_hit(istribitel, 1,istribitel_check, 1,istrebitel_enemie_hit)
+    big_plane_enemie_hit= plane_hit(big_plane, 3,big_plane_check, 3,big_plane_enemie_hit)
 
 
 
-@wrap.always(5)
+
+@wrap.always(100)
 def plane_move():
     global lives,plane,gruz_enemies
     if plane==None:
         return
-    wrap.sprite.move(plane, 2, 0)
+    wrap.sprite.move(plane, 5, 0)
     plane_x = wrap.sprite.get_x(plane)
     if plane_x >=width+100:
         plane_home(plane)
@@ -306,24 +317,24 @@ def plane_move():
         gruz_check(-1)
 
 
-@wrap.always(5)
+@wrap.always(100)
 def istribitel_move():
     global lives,plane,gruz_enemies,istribitel
     if istribitel==None:
         return
-    wrap.sprite.move(istribitel, 2, 0)
+    wrap.sprite.move(istribitel, 3, 0)
     istribitel_x = wrap.sprite.get_x(istribitel)
     if istribitel_x >=width+100:
         plane_home(istribitel)
         lives_check(-2)
         istribitel_check(-1)
 
-@wrap.always(5)
+@wrap.always(50)
 def big_plane_move():
     global lives,plane,gruz_enemies,big_plane
     if big_plane==None:
         return
-    wrap.sprite.move(big_plane, 2, 0)
+    wrap.sprite.move(big_plane, 10, 0)
     big_plane_x = wrap.sprite.get_x(istribitel)
     if big_plane_x >=width+100:
         plane_home(big_plane)
