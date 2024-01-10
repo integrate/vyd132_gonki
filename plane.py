@@ -150,7 +150,7 @@ def repair(pos_x,pos_y):
 @wrap.on_mouse_down(wrap.BUTTON_LEFT)
 def bullet_speed_button():
     global bullet_speed,bullet_speed_level
-    click = wrap.sprite.is_collide_sprite(mouse, bullet_speed)
+    click = wrap.sprite.is_collide_sprite(mouse, bullet_level)
     if bullet_speed_level == 5:
         wrap.sprite_text.set_text(level_speed, "MAX")
         return
