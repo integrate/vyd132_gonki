@@ -2,6 +2,10 @@ import random
 
 import wrap
 import time
+print("""
+Пробел - стрельба
+""")
+
 wrap.add_sprite_dir("img")
 
 width = 800
