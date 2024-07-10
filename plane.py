@@ -200,7 +200,6 @@ def wawe_perexod(old_wawe_number,gruz_enemies_col,istrebitel_enemies_col,big_pla
 
     def_time = time.time()
     timer = def_time - start
-    print(time_wawe)
     if timer < 1:
         return
     time_wawe += 1
